@@ -6,93 +6,155 @@ struct ContentView: View {
     @StateObject private var healthManager = HealthManager()
 
     @State private var gender = "male"
-    @State private var age = ""
+    @AppStorage("selectedAge") private var selectedAge: Int = 25
+    @State private var isAgePickerPresented = false
+
     @State private var height = ""
     @State private var weight = ""
     @State private var duration = ""
     @State private var heartRate = ""
-    @State private var bodyTemp = "36.5"
+    @State private var bodyTemp = "37.5"
     @State private var prediction = "-"
+    
+    @State private var showFireEffect = false
+    @State private var showPrediction = false
 
     let genderOptions = ["male", "female"]
 
     var body: some View {
-        VStack(spacing: 20) {
-            Text("Calorie Burn Predictor")
-                .font(.title2)
-                .bold()
+        ZStack {
+            VStack(spacing: 20) {
+                Text("Calories Burn Predictor")
+                    .font(.title2)
+                    .bold()
 
-            Picker("Gender", selection: $gender) {
-                ForEach(genderOptions, id: \.self) { Text($0) }
-            }
-            .pickerStyle(SegmentedPickerStyle())
+                Picker("Gender", selection: $gender) {
+                    ForEach(genderOptions, id: \.self) { Text($0) }
+                }
+                .pickerStyle(SegmentedPickerStyle())
 
-            TextField("Age", text: $age).keyboardType(.numberPad)
+                // Age Input (Styled Like Button)
+                Button(action: { isAgePickerPresented = true }) {
+                    HStack {
+                        Text("Age")
+                        Spacer()
+                        Text("\(selectedAge)")
+                            .foregroundColor(.primary)
+                    }
+                    .padding()
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 8)
+                            .stroke(Color.gray.opacity(0.5), lineWidth: 1)
+                    )
+                }
+                .sheet(isPresented: $isAgePickerPresented) {
+                    VStack {
+                        Text("Select Age")
+                            .font(.headline)
+                            .padding()
 
-            Group {
-                TextField("Height (cm)", text: $height)
-                    .keyboardType(.decimalPad)
-                    .onChange(of: healthManager.latestHeight) {
-                        if let v = healthManager.latestHeight {
-                            height = String(format: "%.1f", v)
+                        Picker("Age", selection: $selectedAge) {
+                            ForEach(1...120, id: \.self) { age in
+                                Text("\(age)").tag(age)
+                            }
+                        }
+                        .pickerStyle(WheelPickerStyle())
+                        .labelsHidden()
+
+                        Button("Done") {
+                            isAgePickerPresented = false
+                        }
+                        .padding()
+                    }
+                    .presentationDetents([.fraction(0.4)])
+                }
+
+                // Styled Numeric Inputs
+                inputField(label: "Height (cm)", binding: $height, value: healthManager.latestHeight, format: "%.0f")
+                inputField(label: "Weight (kg)", binding: $weight, value: healthManager.latestWeight, format: "%.1f")
+                inputField(label: "Duration (min)", binding: $duration, value: healthManager.latestDuration, format: "%.0f")
+                inputField(label: "Heart Rate (bpm)", binding: $heartRate, value: healthManager.latestHeartRate, format: "%.0f")
+                inputField(label: "Body Temp (°C)", binding: $bodyTemp, value: healthManager.latestBodyTemp, format: "%.1f")
+
+                HStack {
+                    Button("Fetch from Watch") {
+                        healthManager.requestAuthorization()
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.large)
+                    .frame(maxWidth: .infinity)
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+
+                    Button("Predict Calories") {
+                        showFireEffect = true
+                        showPrediction = false
+
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+                            showFireEffect = false
+                            showPrediction = true
+                            predictCalories()
                         }
                     }
-
-                TextField("Weight (kg)", text: $weight)
-                    .keyboardType(.decimalPad)
-                    .onChange(of: healthManager.latestHeight) {
-                        if let v = healthManager.latestHeight {
-                            weight = String(format: "%.1f", v)
-                        }
-                    }
-
-                TextField("Duration (min)", text: $duration)
-                    .keyboardType(.decimalPad)
-                    .onChange(of: healthManager.latestDuration) {
-                        if let v = healthManager.latestDuration {
-                            duration = String(format: "%.1f", v)
-                        }
-                    }
-
-                TextField("Heart Rate (bpm)", text: $heartRate)
-                    .keyboardType(.decimalPad)
-                    .onChange(of: healthManager.latestHeartRate) {
-                        if let v = healthManager.latestHeartRate {
-                            heartRate = String(format: "%.0f", v)
-                        }
-                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(.green) // Optional: Change the color for action emphasis
+                    .controlSize(.large)
+                    .frame(maxWidth: .infinity)
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                }
+                .padding(.top, 10)
                 
-
-                TextField("Body Temp (°C)", text: $bodyTemp)
-                    .keyboardType(.decimalPad)
-                    .onChange(of: healthManager.latestBodyTemp) {
-                        if let v = healthManager.latestBodyTemp {
-                            bodyTemp = String(format: "%.1f", v)
-                        }
+                Group {
+                    if showPrediction {
+                        Text("Prediction: \(prediction) kcal")
+                            .font(.title3)
+                            .transition(.opacity)
+                    } else {
+                        Text(" ")
+                            .font(.title3)
+                            .opacity(0)
                     }
-            }
-
-            HStack {
-                Button("Fetch from Watch") {
-                    healthManager.requestAuthorization()
                 }
-
-                Button("Predict Calories") {
-                    predictCalories()
-                }
+                .frame(height: 40)
             }
-            .padding(.top, 10)
-
-            Text("Prediction: \(prediction) kcal")
-                .font(.title3)
-                .padding()
+            .padding()
+            .onTapGesture {
+                UIApplication.shared.endEditing()
+            }
+            if showFireEffect {
+                FireEffectView()
+                    .transition(.move(edge: .bottom))
+                    .zIndex(2)
+            }
         }
-        .padding()
+        .overlay(
+            showFireEffect ? FireEffectView().zIndex(2) : nil
+        )
     }
 
+    // MARK: - Reusable Styled Input Field
+    func inputField(label: String, binding: Binding<String>, value: Double?, format: String) -> some View {
+        HStack {
+            Text(label)
+            Spacer()
+            TextField("", text: binding)
+                .multilineTextAlignment(.trailing)
+                .keyboardType(.numbersAndPunctuation)
+        }
+        .padding()
+        .overlay(
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(Color.gray.opacity(0.5), lineWidth: 1)
+        )
+        .onChange(of: value) { newVal in
+            if let v = newVal {
+                binding.wrappedValue = String(format: format, v)
+            }
+        }
+    }
+
+    // MARK: - Prediction Logic
     func predictCalories() {
-        guard let ageVal = Double(age),
-              let heightVal = Double(height),
+        guard let heightVal = Double(height),
               let weightVal = Double(weight),
               let durationVal = Double(duration),
               let heartRateVal = Double(heartRate),
@@ -102,6 +164,7 @@ struct ContentView: View {
         }
 
         let genderVal: Double = (gender.lowercased() == "male") ? 0 : 1
+        let ageVal = Double(selectedAge)
 
         do {
             let model = try CaloriesPredictorFromCSV(configuration: .init())
@@ -125,5 +188,11 @@ struct ContentView: View {
             print("Prediction failed: \(error)")
             prediction = "Error"
         }
+    }
+}
+
+extension UIApplication {
+    func endEditing() {
+        sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
 }

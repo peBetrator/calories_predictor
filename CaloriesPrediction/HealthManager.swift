@@ -31,9 +31,9 @@ class HealthManager: ObservableObject {
     func fetchAll() {
         fetchQuantity(.height) { self.latestHeight = $0 }
         fetchQuantity(.bodyMass) { self.latestWeight = $0 }
-        fetchQuantity(.heartRate) { self.latestHeartRate = $0 }
         fetchQuantity(.bodyTemperature) { self.latestBodyTemp = $0 }
         fetchWorkoutDuration()
+        fetchLatestWorkoutHeartRate()
     }
 
     private func fetchQuantity(_ id: HKQuantityTypeIdentifier, completion: @escaping (Double?) -> Void) {
@@ -71,5 +71,33 @@ class HealthManager: ObservableObject {
         }
 
         healthStore.execute(query)
+    }
+    
+    private func fetchLatestWorkoutHeartRate() {
+        let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierEndDate, ascending: false)
+        let workoutQuery = HKSampleQuery(sampleType: .workoutType(), predicate: nil, limit: 1, sortDescriptors: [sortDescriptor]) { _, samples, _ in
+            guard let workout = samples?.first as? HKWorkout else { return }
+
+            // Fetch heart rate samples during this workout
+            guard let heartRateType = HKObjectType.quantityType(forIdentifier: .heartRate) else { return }
+
+            let predicate = HKQuery.predicateForSamples(withStart: workout.startDate, end: workout.endDate, options: .strictStartDate)
+
+            let heartRateQuery = HKSampleQuery(sampleType: heartRateType, predicate: predicate, limit: HKObjectQueryNoLimit, sortDescriptors: nil) { _, hrSamples, _ in
+                guard let samples = hrSamples as? [HKQuantitySample], !samples.isEmpty else { return }
+
+                let unit = HKUnit.count().unitDivided(by: .minute())
+                let heartRates = samples.map { $0.quantity.doubleValue(for: unit) }
+                let avgHeartRate = heartRates.reduce(0, +) / Double(heartRates.count)
+
+                DispatchQueue.main.async {
+                    self.latestHeartRate = avgHeartRate
+                }
+            }
+
+            self.healthStore.execute(heartRateQuery)
+        }
+
+        healthStore.execute(workoutQuery)
     }
 }

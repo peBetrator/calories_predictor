@@ -2,6 +2,8 @@
 
 A simple iOS app that predicts the number of calories burned during exercise, using live Apple Watch sensor data and a custom-trained machine learning model.
 
+<img src="./docs/d15001f7-7dd1-4b71-be17-e67e7d77db63.jpeg" alt="App Demo Screenshot" height="350">
+
 ## Features
 
 - 🤖 **Machine Learning**:
