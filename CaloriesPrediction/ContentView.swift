@@ -16,7 +16,6 @@ struct ContentView: View {
     @State private var bodyTemp = "37.5"
     @State private var prediction = "-"
     
-    @State private var showFireEffect = false
     @State private var showPrediction = false
 
     let genderOptions = ["male", "female"]
@@ -86,14 +85,8 @@ struct ContentView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 12))
 
                     Button("Predict Calories") {
-                        showFireEffect = true
-                        showPrediction = false
-
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
-                            showFireEffect = false
-                            showPrediction = true
-                            predictCalories()
-                        }
+                        showPrediction = true
+                        predictCalories()
                     }
                     .buttonStyle(.borderedProminent)
                     .tint(.green) // Optional: Change the color for action emphasis
@@ -120,15 +113,7 @@ struct ContentView: View {
             .onTapGesture {
                 UIApplication.shared.endEditing()
             }
-            if showFireEffect {
-                FireEffectView()
-                    .transition(.move(edge: .bottom))
-                    .zIndex(2)
-            }
         }
-        .overlay(
-            showFireEffect ? FireEffectView().zIndex(2) : nil
-        )
     }
 
     // MARK: - Reusable Styled Input Field
