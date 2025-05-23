@@ -4,18 +4,8 @@ from import_export.admin import ImportExportModelAdmin
 from unfold.admin import ModelAdmin
 from unfold.contrib.import_export.forms import ImportForm, ExportForm
 from unfold.contrib.filters.admin import (
-    AllValuesCheckboxFilter,
-    AutocompleteSelectMultipleFilter,
-    BooleanRadioFilter,
-    CheckboxFilter,
     ChoicesCheckboxFilter,
-    RangeDateFilter,
-    RangeDateTimeFilter,
     RangeNumericFilter,
-    RelatedCheckboxFilter,
-    RelatedDropdownFilter,
-    SingleNumericFilter,
-    TextFilter,
 )
 
 from .models import CaloriesData, ExerciseData
@@ -61,7 +51,6 @@ class ExerciseDataResource(resources.ModelResource):
             'body_temp',
         )
         import_id_fields = ('user_id',)
-
 
 
 @admin.register(CaloriesData)
