@@ -73,6 +73,14 @@ class ModelTrainer:
                 {'feature': name, 'importance': float(imp)}
                 for name, imp in zip(self.X.columns, self.model.feature_importances_)
             ]
+        elif hasattr(self.model, 'coef_'):
+            # For the linear regression model
+            self.feature_importances = [
+                {'feature': name, 'importance': float(abs(imp))}
+                for name, imp in zip(self.X.columns, self.model.coef_)
+            ]
+        else:
+            self.feature_importances = None
 
     def save_model(self):
         abs_path = os.path.join(settings.MEDIA_ROOT, self.model_path)
