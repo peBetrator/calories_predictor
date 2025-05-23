@@ -44,3 +44,11 @@ venv/
 # IDE
 .idea/
 .vscode/
+
+# env
+.env
+
+# Django
+*.sqlite3
+web_app/static
+__pycache__
