@@ -15,6 +15,7 @@ from unfold.enums import ActionVariant
 
 from .enums import MlModel
 from .models import CaloriesData, ExerciseData, TrainedModel
+from .tasks import train_ml_model_task
 
 
 class CaloriesDataResource(resources.ModelResource):
@@ -118,8 +119,6 @@ class TrainedModelAdmin(ModelAdmin):
     search_fields = ('name',)
     list_filter = [
         ('name', ChoicesCheckboxFilter),
-        # ('mse', RangeNumericFilter),
-        # ('r2', RangeNumericFilter),
     ]
 
     actions_list = [
@@ -136,21 +135,18 @@ class TrainedModelAdmin(ModelAdmin):
 
     @action(description=MlModel.LINEAR_REGRESSION.label, icon='linear_scale')
     def ml_model_1(self, request):
-        messages.success(
-            request, _('Changelist action has been successfully executed.')
-        )
+        train_ml_model_task.delay(MlModel.LINEAR_REGRESSION.value)
+        messages.success(request, _(f'The training of {MlModel.LINEAR_REGRESSION.label} model has been started.'))
         return redirect(reverse_lazy('admin:predictor_trainedmodel_changelist'))
 
     @action(description=MlModel.RANDOM_FOREST.label, icon='forest')
     def ml_model_2(self, request):
-        messages.success(
-            request, _('Changelist action has been successfully executed.')
-        )
+        train_ml_model_task.delay(MlModel.RANDOM_FOREST.value)
+        messages.success(request, _(f'The training of {MlModel.RANDOM_FOREST.label} model has been started.'))
         return redirect(reverse_lazy('admin:predictor_trainedmodel_changelist'))
 
     @action(description=MlModel.XGBOOST.label, icon='speed')
     def ml_model_3(self, request):
-        messages.success(
-            request, _('Changelist action has been successfully executed.')
-        )
+        train_ml_model_task.delay(MlModel.XGBOOST.value)
+        messages.success(request, _(f'The training of {MlModel.XGBOOST.label} model has been started.'))
         return redirect(reverse_lazy('admin:predictor_trainedmodel_changelist'))

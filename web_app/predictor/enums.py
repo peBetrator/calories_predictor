@@ -10,4 +10,3 @@ class MlModel(TextChoices):
     LINEAR_REGRESSION = 'linear_regression', 'Linear Regression'
     RANDOM_FOREST = 'random_forest', 'Random Forest'
     XGBOOST = 'xgboost', 'XGBoost'
-    LIGHTGBM = 'lightgbm', 'LightGBM'
