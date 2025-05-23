@@ -80,6 +80,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'main.wsgi.application'
 
+CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', 'redis://localhost:6379/0')
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases

@@ -15,8 +15,7 @@ from unfold.enums import ActionVariant
 
 from .enums import MlModel
 from .models import CaloriesData, ExerciseData, TrainedModel
-from .tasks import train_ml_model_task
-
+from .utils import ModelTrainer
 
 class CaloriesDataResource(resources.ModelResource):
     user_id = fields.Field(attribute='user_id', column_name='User_ID')
@@ -116,10 +115,6 @@ class TrainedModelAdmin(ModelAdmin):
         'r2',
         'updated_at',
     )
-    search_fields = ('name',)
-    list_filter = [
-        ('name', ChoicesCheckboxFilter),
-    ]
 
     actions_list = [
         {
@@ -135,18 +130,24 @@ class TrainedModelAdmin(ModelAdmin):
 
     @action(description=MlModel.LINEAR_REGRESSION.label, icon='linear_scale')
     def ml_model_1(self, request):
-        train_ml_model_task.delay(MlModel.LINEAR_REGRESSION.value)
-        messages.success(request, _(f'The training of {MlModel.LINEAR_REGRESSION.label} model has been started.'))
+        ModelTrainer(MlModel.LINEAR_REGRESSION.value).run()
+        messages.success(request, _(f'The training of {MlModel.LINEAR_REGRESSION.label} model has been completed'))
         return redirect(reverse_lazy('admin:predictor_trainedmodel_changelist'))
 
     @action(description=MlModel.RANDOM_FOREST.label, icon='forest')
     def ml_model_2(self, request):
-        train_ml_model_task.delay(MlModel.RANDOM_FOREST.value)
-        messages.success(request, _(f'The training of {MlModel.RANDOM_FOREST.label} model has been started.'))
+        ModelTrainer(MlModel.RANDOM_FOREST.value).run()
+        messages.success(request, _(f'The training of {MlModel.RANDOM_FOREST.label} model has been completed'))
         return redirect(reverse_lazy('admin:predictor_trainedmodel_changelist'))
 
     @action(description=MlModel.XGBOOST.label, icon='speed')
     def ml_model_3(self, request):
-        train_ml_model_task.delay(MlModel.XGBOOST.value)
-        messages.success(request, _(f'The training of {MlModel.XGBOOST.label} model has been started.'))
+        ModelTrainer(MlModel.XGBOOST.value).run()
+        messages.success(request, _(f'The training of {MlModel.XGBOOST.label} model has been completed'))
         return redirect(reverse_lazy('admin:predictor_trainedmodel_changelist'))
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_add_permission(self, request, obj=None):
+        return False

@@ -5,7 +5,6 @@ from typing import Optional, Union, List, Dict, Any
 import numpy as np
 import pandas as pd
 from django.conf import settings
-from sklearn.base import RegressorMixin
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
@@ -25,7 +24,7 @@ class ModelTrainer:
 
     def __init__(self, model_name: MlModel):
         self.model_name: MlModel = model_name
-        self.model: Optional[RegressorMixin] = None
+        self.model: Optional[Union[RandomForestRegressor, LinearRegression, XGBRegressor]] = None
         self.X: Optional[pd.DataFrame] = None
         self.y: Optional[Union[pd.Series, np.ndarray]] = None
         self.X_train: Optional[Union[pd.DataFrame, np.ndarray]] = None
@@ -36,7 +35,7 @@ class ModelTrainer:
         self.mse: Optional[float] = None
         self.r2: Optional[float] = None
         self.feature_importances: Optional[List[Dict[str, Any]]] = None
-        self.model_path: str = f'models/{self.model_name.value}_model.pkl'
+        self.model_path: str = f'models/{self.model_name}_model.pkl'
 
     def fetch_data(self):
         ex_df = pd.DataFrame(list(ExerciseData.objects.all().values()))

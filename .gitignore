@@ -51,4 +51,5 @@ venv/
 # Django
 *.sqlite3
 web_app/static
+web_app/media/models
 __pycache__
