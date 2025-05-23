@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'import_export',
     'main',
     'predictor.apps.PredictorConfig',
 ]
@@ -119,13 +120,28 @@ UNFOLD = {
     },
     'SHOW_HISTORY': True,
     'SHOW_VIEW_ON_SITE': True,
+    'TABS': [
+        {
+            'page': 'Calories Burned Predictor',
+            'models': ['predictor.caloriesdata', 'predictor.exercisedata'],
+            'items': [
+                {
+                    'title': _('Calories'),
+                    'link': reverse_lazy('admin:predictor_caloriesdata_changelist'),
+                },
+                {
+                    'title': _('Exercises'),
+                    'link': reverse_lazy('admin:predictor_exercisedata_changelist'),
+                }
+            ],
+        }
+    ],
     'SIDEBAR': {
         'show_search': True,
         'show_all_applications': True,
         'navigation': [
             {
-                'title': _(''),
-                'collapsible': False,
+                'title': _('Calories Burned Predictor'),
                 'items': [
                     {
                         'title': _('Home'),
@@ -137,54 +153,13 @@ UNFOLD = {
                         'icon': 'person',
                         'link': reverse_lazy('admin:auth_user_changelist'),
                     },
+                    {
+                        'title': _('Dataset'),
+                        'icon': 'data_object',
+                        'link': reverse_lazy('admin:predictor_caloriesdata_changelist'),
+                    }
                 ],
             },
-            # {
-            #     'title': _('CC Form'),
-            #     'collapsible': True,
-            #     'items': [
-            #         {
-            #             'title': _('Variables'),
-            #             'icon': 'manufacturing',
-            #             'link': reverse_lazy('admin:cc_form_ccformvariablemodel_changelist'),
-            #         },
-            #         {
-            #             'title': _('Agents'),
-            #             'icon': 'support_agent',
-            #             'link': reverse_lazy('admin:cc_form_ccagent_changelist'),
-            #         },
-            #         {
-            #             'title': _('Actions'),
-            #             'icon': 'receipt_long',
-            #             'link': reverse_lazy('admin:cc_form_ccaction_changelist'),
-            #         },
-            #         {
-            #             'title': _('TMOs'),
-            #             'icon': 'factory',
-            #             'link': reverse_lazy('admin:cc_form_tmomodel_changelist'),
-            #         },
-            #         {
-            #             'title': _('Brands'),
-            #             'icon': 'warehouse',
-            #             'link': reverse_lazy('admin:cc_form_brandmodel_changelist'),
-            #         },
-            #         {
-            #             'title': _('Products'),
-            #             'icon': 'smoking_rooms',
-            #             'link': reverse_lazy('admin:cc_form_productmodel_changelist'),
-            #         },
-            #         {
-            #             'title': _('Topics'),
-            #             'icon': 'article',
-            #             'link': reverse_lazy('admin:cc_form_topicmodel_changelist'),
-            #         },
-            #         {
-            #             'title': _('SubTopics'),
-            #             'icon': 'convert_to_text',
-            #             'link': reverse_lazy('admin:cc_form_subtopicmodel_changelist'),
-            #         },
-            #     ],
-            # },
         ],
     },
 }
