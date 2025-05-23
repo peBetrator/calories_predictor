@@ -1,6 +1,6 @@
 from django.db import models
 
-from .enums import Gender
+from .enums import Gender, MlModel
 
 
 class CaloriesData(models.Model):
@@ -31,3 +31,17 @@ class ExerciseData(models.Model):
     class Meta:
         verbose_name = 'Exercise Data'
         verbose_name_plural = 'Exercise Data'
+
+
+class TrainedModel(models.Model):
+    name = models.CharField(choices=MlModel.choices, max_length=20, unique=True)
+    file = models.FileField(upload_to='models/')
+    mse = models.FloatField(null=True, blank=True)
+    r2 = models.FloatField(null=True, blank=True)
+    feature_importances = models.JSONField(null=True, blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name

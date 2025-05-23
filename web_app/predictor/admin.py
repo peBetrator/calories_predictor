@@ -1,4 +1,7 @@
-from django.contrib import admin
+from django.contrib import admin, messages
+from django.shortcuts import redirect
+from django.urls import reverse_lazy
+from django.utils.translation import gettext_lazy as _
 from import_export import resources, fields
 from import_export.admin import ImportExportModelAdmin
 from unfold.admin import ModelAdmin
@@ -7,8 +10,11 @@ from unfold.contrib.filters.admin import (
     ChoicesCheckboxFilter,
     RangeNumericFilter,
 )
+from unfold.decorators import action
+from unfold.enums import ActionVariant
 
-from .models import CaloriesData, ExerciseData
+from .enums import MlModel
+from .models import CaloriesData, ExerciseData, TrainedModel
 
 
 class CaloriesDataResource(resources.ModelResource):
@@ -96,3 +102,55 @@ class ExerciseDataAdmin(ModelAdmin, ImportExportModelAdmin):
     resource_classes = (ExerciseDataResource,)
     import_form_class = ImportForm
     export_form_class = ExportForm
+
+
+@admin.register(TrainedModel)
+class TrainedModelAdmin(ModelAdmin):
+    list_filter_sheet = False
+    list_fullwidth = True
+
+    list_display = (
+        'name',
+        'mse',
+        'r2',
+        'updated_at',
+    )
+    search_fields = ('name',)
+    list_filter = [
+        ('name', ChoicesCheckboxFilter),
+        # ('mse', RangeNumericFilter),
+        # ('r2', RangeNumericFilter),
+    ]
+
+    actions_list = [
+        {
+            'title': 'Train Model',
+            'variant': ActionVariant.PRIMARY,
+            'items': [
+                'ml_model_1',
+                'ml_model_2',
+                'ml_model_3',
+            ],
+        },
+    ]
+
+    @action(description=MlModel.LINEAR_REGRESSION.label, icon='linear_scale')
+    def ml_model_1(self, request):
+        messages.success(
+            request, _('Changelist action has been successfully executed.')
+        )
+        return redirect(reverse_lazy('admin:predictor_trainedmodel_changelist'))
+
+    @action(description=MlModel.RANDOM_FOREST.label, icon='forest')
+    def ml_model_2(self, request):
+        messages.success(
+            request, _('Changelist action has been successfully executed.')
+        )
+        return redirect(reverse_lazy('admin:predictor_trainedmodel_changelist'))
+
+    @action(description=MlModel.XGBOOST.label, icon='speed')
+    def ml_model_3(self, request):
+        messages.success(
+            request, _('Changelist action has been successfully executed.')
+        )
+        return redirect(reverse_lazy('admin:predictor_trainedmodel_changelist'))

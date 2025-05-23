@@ -157,6 +157,11 @@ UNFOLD = {
                         'title': _('Dataset'),
                         'icon': 'data_object',
                         'link': reverse_lazy('admin:predictor_caloriesdata_changelist'),
+                    },
+                    {
+                        'title': _('ML Models'),
+                        'icon': 'model_training',
+                        'link': reverse_lazy('admin:predictor_trainedmodel_changelist'),
                     }
                 ],
             },
