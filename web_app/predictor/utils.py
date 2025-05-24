@@ -107,3 +107,59 @@ class ModelTrainer:
         self.save_model()
         self.save_to_db()
         return self.trained_model
+
+    def get_cohort_corr_data(self) -> dict:
+        color_thresholds = [
+            (0.99, 'bg-primary-900 dark:bg-primary-900 text-white'),
+            (0.8, 'bg-primary-700 dark:bg-primary-700 text-white'),
+            (0.5, 'bg-primary-500 dark:bg-primary-600 text-white'),
+            (0.14, 'bg-primary-400 dark:bg-primary-500'),
+            (0.01, 'bg-primary-300 dark:bg-primary-400'),
+            (0.0, 'bg-base-50 dark:bg-base-800'),
+        ]
+        display_names = {
+            'age': 'Age',
+            'height': 'Height',
+            'weight': 'Weight',
+            'duration': 'Duration',
+            'heart_rate': 'Heart Rate',
+            'body_temp': 'Body Temperature',
+            'Gender_male': 'Gender (Male)',
+            'Calories': 'Calories',
+        }
+
+        df = self.X.copy()
+        df['Calories'] = self.y
+
+        corr_matrix = df.corr(numeric_only=True)
+        variables = corr_matrix.columns.tolist()
+        display_variables = [display_names.get(col, col.title()) for col in variables]
+
+        headers = [{'title': name, 'subtitle': ''} for name in display_variables]
+        rows = []
+
+        for idx, row_var in enumerate(variables):
+            cols = []
+            for col_var in variables:
+                val = corr_matrix.loc[row_var, col_var]
+                abs_val = abs(val)
+                for threshold, color in color_thresholds:
+                    if abs_val >= threshold:
+                        break
+                cols.append({
+                    'value': f'{val:.2f}',
+                    'color': color,
+                    'subtitle': None,
+                })
+            rows.append({
+                'header': {'title': display_names.get(row_var, row_var.title()), 'subtitle': ''},
+                'cols': cols,
+            })
+
+        return {'headers': headers, 'rows': rows}
+
+
+def get_cohort_dataset_data() -> dict:
+    trainer = ModelTrainer(MlModel.LINEAR_REGRESSION.value)
+    trainer.fetch_data()
+    return trainer.get_cohort_corr_data()

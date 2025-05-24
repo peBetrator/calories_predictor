@@ -12,12 +12,13 @@ from unfold.contrib.filters.admin import (
     ChoicesCheckboxFilter,
     RangeNumericFilter,
 )
+from unfold.components import BaseComponent, register_component
 from unfold.decorators import action
 from unfold.enums import ActionVariant
 
 from .enums import MlModel
 from .models import CaloriesData, ExerciseData, TrainedModel
-from .utils import ModelTrainer
+from .utils import ModelTrainer, get_cohort_dataset_data
 
 class CaloriesDataResource(resources.ModelResource):
     user_id = fields.Field(attribute='user_id', column_name='User_ID')
@@ -159,3 +160,11 @@ class TrainedModelAdmin(ModelAdmin):
 
     def has_add_permission(self, request, obj=None):
         return False
+
+
+@register_component
+class CohortDatasetComponent(BaseComponent):
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["data"] = get_cohort_dataset_data()
+        return context

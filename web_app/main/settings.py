@@ -66,10 +66,11 @@ ROOT_URLCONF = 'main.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -121,6 +122,7 @@ UNFOLD = {
     },
     'SHOW_HISTORY': True,
     'SHOW_VIEW_ON_SITE': True,
+    'DASHBOARD_CALLBACK': 'predictor.views.dashboard_callback',
     'TABS': [
         {
             'page': 'Calories Burned Predictor',
@@ -145,7 +147,7 @@ UNFOLD = {
                 'title': _('Calories Burned Predictor'),
                 'items': [
                     {
-                        'title': _('Home'),
+                        'title': _('Dashboard'),
                         'icon': 'dashboard',
                         'link': reverse_lazy('admin:index'),
                     },
