@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'import_export',
+    'widget_tweaks',
     'main',
     'predictor.apps.PredictorConfig',
 ]
@@ -117,6 +118,13 @@ UNFOLD = {
     'SITE_TITLE': 'Calories Burned Predictor Admin',
     'SITE_URL': '/',
     'SITE_SYMBOL': 'local_fire_department',
+    'SITE_DROPDOWN': [
+        {
+            'icon': 'contact_page',
+            'title': _('Predict Form'),
+            'link': '/',
+        },
+    ],
     'LOGIN': {
         'image': lambda _: static('main/images/burn_calories.jpg'),
     },
