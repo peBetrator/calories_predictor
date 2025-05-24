@@ -5,6 +5,7 @@ django-import-export
 celery
 redis
 django-widget-tweaks
+django-crispy-forms
 
 scikit-learn>=1.3
 pandas>=2.0

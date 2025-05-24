@@ -3,10 +3,12 @@ import joblib
 
 import numpy as np
 from django.conf import settings
+from django.contrib import messages
 from django.views.generic import FormView
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from django.urls import reverse_lazy
+from unfold.views import UnfoldModelAdminViewMixin
 
 from .enums import MlModel
 from .forms import CaloriesForm
@@ -71,10 +73,17 @@ def predict_xgboost(gender, age, height, weight, duration, heart_rate, body_temp
     return round(float(y_pred[0]), 1)
 
 
-class PredictCaloriesView(FormView):
+class PredictCaloriesView(UnfoldModelAdminViewMixin, FormView):
+    title = _('Calories Burned Predictor')
     template_name = 'predictor/predict_form.html'
     form_class = CaloriesForm
-    success_url = reverse_lazy('predict_calories')
+    permission_required = (
+        'predictor.view_trainedmodel',
+        'predictor.add_trainedmodel',
+        'predictor.change_trainedmodel',
+        'predictor.delete_trainedmodel',
+    )
+    success_url = reverse_lazy('admin:predict_calories')
 
     def form_valid(self, form):
         data = form.cleaned_data
@@ -84,6 +93,11 @@ class PredictCaloriesView(FormView):
             gender_val, data['age'], data['height'], data['weight'],
             data['duration'], data['heart_rate'], data['body_temp']
         )
+        messages.success(
+            self.request,
+            f'Prediction: {prediction:.1f} kcal<br>'
+        )
+
         return self.render_to_response(
             self.get_context_data(form=form, prediction=prediction)
         )

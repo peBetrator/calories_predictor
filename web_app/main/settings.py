@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'crispy_forms',
     'import_export',
     'widget_tweaks',
     'main',
@@ -118,13 +119,7 @@ UNFOLD = {
     'SITE_TITLE': 'Calories Burned Predictor Admin',
     'SITE_URL': '/',
     'SITE_SYMBOL': 'local_fire_department',
-    'SITE_DROPDOWN': [
-        {
-            'icon': 'contact_page',
-            'title': _('Predict Form'),
-            'link': '/',
-        },
-    ],
+    'SITE_DROPDOWN': [],
     'LOGIN': {
         'image': lambda _: static('main/images/burn_calories.jpg'),
     },
@@ -160,11 +155,6 @@ UNFOLD = {
                         'link': reverse_lazy('admin:index'),
                     },
                     {
-                        'title': _('Users'),
-                        'icon': 'person',
-                        'link': reverse_lazy('admin:auth_user_changelist'),
-                    },
-                    {
                         'title': _('Dataset'),
                         'icon': 'data_object',
                         'link': reverse_lazy('admin:predictor_caloriesdata_changelist'),
@@ -173,7 +163,12 @@ UNFOLD = {
                         'title': _('ML Models'),
                         'icon': 'model_training',
                         'link': reverse_lazy('admin:predictor_trainedmodel_changelist'),
-                    }
+                    },
+                    {
+                        'title': _('Predictor'),
+                        'icon': 'calculate',
+                        'link': reverse_lazy('admin:predict_calories'),
+                    },
                 ],
             },
         ],
@@ -203,3 +198,8 @@ MEDIA_URL = '/api/media/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+CRISPY_TEMPLATE_PACK = "unfold_crispy"
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = ["unfold_crispy"]

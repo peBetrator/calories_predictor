@@ -1,8 +1,10 @@
 import time
 
 from django.contrib import admin, messages
+from django.contrib.auth.admin import GroupAdmin as BaseGroupAdmin
+from django.contrib.auth.models import Group
 from django.shortcuts import redirect
-from django.urls import reverse_lazy
+from django.urls import path, reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from import_export import resources, fields
 from import_export.admin import ImportExportModelAdmin
@@ -19,6 +21,8 @@ from unfold.enums import ActionVariant
 from .enums import MlModel
 from .models import CaloriesData, ExerciseData, TrainedModel
 from .utils import ModelTrainer, get_cohort_dataset_data
+from .views import PredictCaloriesView
+
 
 class CaloriesDataResource(resources.ModelResource):
     user_id = fields.Field(attribute='user_id', column_name='User_ID')
@@ -166,5 +170,19 @@ class TrainedModelAdmin(ModelAdmin):
 class CohortDatasetComponent(BaseComponent):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["data"] = get_cohort_dataset_data()
+        context['data'] = get_cohort_dataset_data()
         return context
+
+
+@admin.register(Group)
+class GroupAdmin(BaseGroupAdmin, ModelAdmin):
+    pass
+
+    def get_urls(self):
+        return super().get_urls() + [
+            path(
+                'predict-calories',
+                self.admin_site.admin_view(PredictCaloriesView.as_view(model_admin=self)),
+                name='predict_calories',
+            ),
+        ]

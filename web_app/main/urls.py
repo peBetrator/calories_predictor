@@ -6,7 +6,7 @@ from predictor import urls as predictor_urls
 
 
 urlpatterns = [
-    path('api/admin/', admin.site.urls),
+    path('', admin.site.urls),
 
-    path('', include(predictor_urls.urlpatterns)),
+    # path('', include(predictor_urls.urlpatterns)),
 ]

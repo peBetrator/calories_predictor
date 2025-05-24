@@ -1,55 +1,35 @@
-{% load static %}
-{% load widget_tweaks %}
+{% extends "admin/base.html" %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Calories Burn Predictor</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-</head>
-<body class="bg-gray-900 text-white min-h-screen flex items-center justify-center">
-<div class="max-w-md w-full p-8 bg-gray-800 rounded-lg shadow-lg">
-    <h2 class="text-2xl font-bold mb-6 text-center">Calories Burn Predictor</h2>
-    <form method="post" class="space-y-4">
-        {% csrf_token %}
-        <div>
-            <label class="block text-gray-300 mb-1">Gender</label>
-            <div class="flex gap-4">
-                {{ form.gender }}
-            </div>
+{% load admin_urls crispy_forms_tags i18n unfold %}
+
+{% block breadcrumbs %}{% if not is_popup %}
+    <div class="px-4 lg:px-8">
+        <div class="container mb-6 mx-auto -my-3 lg:mb-12">
+            <ul class="flex flex-wrap">
+                {% url 'admin:index' as link %}
+                {% trans 'Home' as name %}
+                {% include 'unfold/helpers/breadcrumb_item.html' with link=link name=name %}
+
+                {% url 'admin:predictor_trainedmodel_changelist' as link %}
+                {% trans 'Models' as name %}
+                {% include 'unfold/helpers/breadcrumb_item.html' with link=link name=name %}
+
+                {% trans 'Calories Burned Predictor' as name %}
+                {% include 'unfold/helpers/breadcrumb_item.html' with name=name %}
+            </ul>
         </div>
-        <div>
-            <label class="block text-gray-300 mb-1">Age</label>
-            {{ form.age|add_class:"w-full rounded px-3 py-2 bg-gray-700 border border-gray-600" }}
-        </div>
-        <div>
-            <label class="block text-gray-300 mb-1">Height (cm)</label>
-            {{ form.height|add_class:"w-full rounded px-3 py-2 bg-gray-700 border border-gray-600" }}
-        </div>
-        <div>
-            <label class="block text-gray-300 mb-1">Weight (kg)</label>
-            {{ form.weight|add_class:"w-full rounded px-3 py-2 bg-gray-700 border border-gray-600" }}
-        </div>
-        <div>
-            <label class="block text-gray-300 mb-1">Duration (min)</label>
-            {{ form.duration|add_class:"w-full rounded px-3 py-2 bg-gray-700 border border-gray-600" }}
-        </div>
-        <div>
-            <label class="block text-gray-300 mb-1">Heart Rate (bpm)</label>
-            {{ form.heart_rate|add_class:"w-full rounded px-3 py-2 bg-gray-700 border border-gray-600" }}
-        </div>
-        <div>
-            <label class="block text-gray-300 mb-1">Body Temp (°C)</label>
-            {{ form.body_temp|add_class:"w-full rounded px-3 py-2 bg-gray-700 border border-gray-600" }}
-        </div>
-        <button type="submit" class="w-full bg-green-500 hover:bg-green-600 py-2 rounded font-bold mt-4">Predict Calories</button>
-    </form>
-    {% if prediction %}
-        <div class="mt-8 text-center text-xl font-semibold text-green-400">
-            Prediction: {{ prediction }} kcal
-        </div>
-    {% endif %}
-</div>
-</body>
-</html>
+    </div>
+{% endif %}{% endblock %}
+
+{% block extrahead %}
+    {{ block.super }}
+    <script src="{% url 'admin:jsi18n' %}"></script>
+{% endblock %}
+
+{% block content %}
+    {% tab_list "Calories Burned Predictor" %}
+
+    <div class="flex flex-col gap-8">
+        {% crispy form "unfold_crispy" %}
+    </div>
+{% endblock %}
