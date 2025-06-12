@@ -21,14 +21,31 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-if os.getenv('ALLOWED_HOSTS'):
-    ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(' ')
-else:
-    ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
+# if os.getenv('ALLOWED_HOSTS'):
+#     ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(' ')
+# else:
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    '0.0.0.0',
+    '.serveo.net',
+    '.ngrok.io',
+    '.localtunnel.me',
+    '.lhr.life',
+]
 
-if os.getenv('CSRF_TRUSTED_ORIGINS'):
-    CSRF_HEADER_NAME = os.getenv('CSRF_HEADER_NAME', 'HTTP_X_CSRF_TOKEN')
-    CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS').split(' ')
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.lhr.life',
+    'https://*.ngrok.io',
+    'https://*.githubpreview.dev',
+    'https://*.app.github.dev',
+]
+
+CSRF_HEADER_NAME = os.getenv('CSRF_HEADER_NAME', 'HTTP_X_CSRF_TOKEN')
+
+# if os.getenv('CSRF_TRUSTED_ORIGINS'):
+#     CSRF_HEADER_NAME = os.getenv('CSRF_HEADER_NAME', 'HTTP_X_CSRF_TOKEN')
+#     CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS').split(' ')
 
 # Application definition
 
