@@ -14,7 +14,8 @@
                 {% trans 'Models' as name %}
                 {% include 'unfold/helpers/breadcrumb_item.html' with link=link name=name %}
 
-                {% trans 'Calories Burned Predictor' as name %}
+                {% url 'admin:predict_calories' as link %}
+                {% trans 'Predictor' as name %}
                 {% include 'unfold/helpers/breadcrumb_item.html' with name=name %}
             </ul>
         </div>

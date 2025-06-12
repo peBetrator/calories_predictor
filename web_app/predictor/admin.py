@@ -176,10 +176,8 @@ class CohortDatasetComponent(BaseComponent):
 
 @admin.register(Group)
 class GroupAdmin(BaseGroupAdmin, ModelAdmin):
-    pass
-
     def get_urls(self):
-        return super().get_urls() + [
+        return [
             path(
                 'predict-calories',
                 self.admin_site.admin_view(PredictCaloriesView.as_view(model_admin=self)),
