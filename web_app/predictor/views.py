@@ -64,8 +64,16 @@ def get_models_feature_importance():
     return model_importance
 
 
-def predict_xgboost(gender, age, height, weight, duration, heart_rate, body_temp):
-    model_path = os.path.join(settings.MEDIA_ROOT, 'models/xgboost_model.pkl')
+def predict_calories_burnt(model_name, gender, age, height, weight, duration, heart_rate, body_temp):
+    try:
+        model = TrainedModel.objects.get(name=model_name)
+    except TrainedModel.DoesNotExist:
+        raise ValueError(
+            f'Model "{model_name}" does not exist.'
+            ' You need to train the model first.'
+        )
+
+    model_path = os.path.join(settings.MEDIA_ROOT, f'models/{model_name}_model.pkl')
     model = joblib.load(model_path)
 
     X = np.array([[age, height, weight, duration, heart_rate, body_temp, gender]])
@@ -89,14 +97,19 @@ class PredictCaloriesView(UnfoldModelAdminViewMixin, FormView):
         data = form.cleaned_data
         gender_val = 1 if data['gender'] == 'male' else 0
 
-        prediction = predict_xgboost(
-            gender_val, data['age'], data['height'], data['weight'],
-            data['duration'], data['heart_rate'], data['body_temp']
-        )
-        messages.success(
-            self.request,
-            f'Prediction: {prediction:.1f} kcal'
-        )
+        try:
+            prediction = predict_calories_burnt(
+                data['model'],
+                gender_val, data['age'], data['height'], data['weight'],
+                data['duration'], data['heart_rate'], data['body_temp']
+            )
+            messages.success(
+                self.request,
+                f'Prediction: {prediction:.1f} kcal'
+            )
+        except ValueError as e:
+            messages.error(self.request, str(e))
+            prediction = None
 
         return self.render_to_response(
             self.get_context_data(form=form, prediction=prediction)
