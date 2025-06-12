@@ -1,7 +1,8 @@
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Fieldset, Row, Column, Reset
+from crispy_forms.layout import Layout, HTML, Fieldset, Row, Column, BaseInput
 from django import forms
-from unfold.layout import Submit
+from django.utils.translation import gettext_lazy as _
+from unfold.layout import Submit, ButtonClassesMixin
 from unfold.widgets import (
     UnfoldAdminIntegerFieldWidget,
     UnfoldAdminRadioSelectWidget,
@@ -9,6 +10,10 @@ from unfold.widgets import (
 )
 
 from .enums import Gender, MlModel
+
+
+class Reset(ButtonClassesMixin, BaseInput):
+    input_type = 'reset'
 
 
 class CaloriesForm(forms.Form):
@@ -68,6 +73,7 @@ class CaloriesForm(forms.Form):
 
         self.helper = FormHelper()
         self.helper.layout = Layout(
+            HTML('<h2 class="text-2xl font-semibold mb-6">Calculate predicted calories</h2>'),
             Row(
                 Column(
                     Fieldset(None, 'model'),
@@ -97,9 +103,7 @@ class CaloriesForm(forms.Form):
                     css_class='lg:w-1/2',
                 ),
                 css_class='mb-8',
-            )
+            ),
         )
-        self.helper.add_input(Submit('submit', 'Predict'))
-
-        #TODO: make this working
-        # self.helper.add_input(Reset('reset', 'Clear'))
+        self.helper.add_input(Reset('reset', _('Clear')))
+        self.helper.add_input(Submit('submit', _('Predict')))
