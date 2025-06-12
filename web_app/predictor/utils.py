@@ -40,6 +40,10 @@ class ModelTrainer:
     def fetch_data(self):
         ex_df = pd.DataFrame(list(ExerciseData.objects.all().values()))
         cal_df = pd.DataFrame(list(CaloriesData.objects.all().values()))
+
+        if ex_df.empty or cal_df.empty:
+            return
+
         df = pd.merge(ex_df, cal_df, left_on='user_id', right_on='user_id')
         df['Gender_male'] = (df['gender'] == 'male').astype(int)
         self.X = df[['age', 'height', 'weight', 'duration', 'heart_rate', 'body_temp', 'Gender_male']]
