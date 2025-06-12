@@ -19,7 +19,7 @@ from unfold.decorators import action
 from unfold.enums import ActionVariant
 
 from .enums import MlModel
-from .models import CaloriesData, ExerciseData, TrainedModel
+from .models import CaloriesData, ExerciseData, TrainedModel, Forms
 from .utils import ModelTrainer, get_cohort_dataset_data
 from .views import PredictCaloriesView
 
@@ -174,8 +174,8 @@ class CohortDatasetComponent(BaseComponent):
         return context
 
 
-@admin.register(Group)
-class GroupAdmin(BaseGroupAdmin, ModelAdmin):
+@admin.register(Forms)
+class FormsAdmin(ModelAdmin):
     def get_urls(self):
         return super().get_urls() + [
             path(
