@@ -13,6 +13,7 @@ from .enums import Gender, MlModel
 
 class CaloriesForm(forms.Form):
     model = forms.ChoiceField(
+        label='ML Model',
         choices=MlModel.choices,
         widget=UnfoldAdminSelectWidget(),
         required=True,
@@ -69,9 +70,10 @@ class CaloriesForm(forms.Form):
         self.helper.layout = Layout(
             Row(
                 Column(
-                    Fieldset('ML Model',
-                        'model',
-                    ),
+                    Fieldset(None, 'model'),
+                    css_class='lg:w-1/2',
+                ),
+                Column(
                     css_class='lg:w-1/2',
                 ),
                 css_class='mb-8',
