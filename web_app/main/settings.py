@@ -61,6 +61,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
 ]
 
 ROOT_URLCONF = 'main.urls'
@@ -125,6 +126,7 @@ UNFOLD = {
     },
     'SHOW_HISTORY': True,
     'SHOW_VIEW_ON_SITE': True,
+    'SHOW_LANGUAGES': True,
     'DASHBOARD_CALLBACK': 'predictor.views.dashboard_callback',
     'TABS': [
         {
@@ -143,8 +145,8 @@ UNFOLD = {
         }
     ],
     'SIDEBAR': {
-        'show_search': True,
-        'show_all_applications': True,
+        'show_search': False,
+        'show_all_applications': False,
         'navigation': [
             {
                 'title': _('Calories Burned Predictor'),
@@ -179,7 +181,7 @@ UNFOLD = {
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en'
 
 TIME_ZONE = 'UTC'
 
@@ -187,6 +189,11 @@ USE_I18N = True
 
 USE_TZ = True
 
+LANGUAGES = (
+    ('ru', _('Russian')),
+    ('ro', _('Romanian')),
+    ('en', _('English')),
+)
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/api/static/'

@@ -1,12 +1,13 @@
-from django.conf.urls import include
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path
+from django.conf.urls.i18n import i18n_patterns
 
-from predictor import urls as predictor_urls
 
-
-urlpatterns = [
-    path('', admin.site.urls),
-
-    # path('', include(predictor_urls.urlpatterns)),
-]
+urlpatterns = (
+    [
+        path('i18n/', include('django.conf.urls.i18n')),
+    ]
+    + i18n_patterns(
+        path('', admin.site.urls),
+    )
+)

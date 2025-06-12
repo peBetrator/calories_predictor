@@ -125,7 +125,7 @@ class TrainedModelAdmin(ModelAdmin):
 
     actions_list = [
         {
-            'title': 'Train Model',
+            'title': _('Train Model'),
             'variant': ActionVariant.PRIMARY,
             'items': [
                 'ml_model_1',
