@@ -43,7 +43,7 @@
                 {% endfor %}
             </div>
 
-            {% component "unfold/components/card.html" with title=_("Correlation Matrix Heatmap") %}
+            {% component "unfold/components/card.html" with title=_("Model parameters weight") %}
                 <div class="flex flex-col gap-8 lg:flex-row">
                     {% for model_name, importance_list in model_importance.items %}
                         {% component "unfold/components/card.html" with class="lg:w-1/3" %}
