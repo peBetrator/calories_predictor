@@ -116,7 +116,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 UNFOLD = {
     'SITE_HEADER': 'Calories Burned Predictor',
-    'SITE_TITLE': 'Calories Burned Predictor Admin',
+    'SITE_TITLE': 'Calories Burned Predictor',
     'SITE_URL': '/',
     'SITE_SYMBOL': 'local_fire_department',
     'SITE_DROPDOWN': [],

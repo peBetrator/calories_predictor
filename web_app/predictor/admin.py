@@ -69,7 +69,7 @@ class ExerciseDataResource(resources.ModelResource):
 @admin.register(CaloriesData)
 class CaloriesDataAdmin(ModelAdmin, ImportExportModelAdmin):
     list_filter_sheet = False
-    list_fullwidth = True
+    list_fullwidth = False
 
     list_display = (
         'user_id',
@@ -85,7 +85,7 @@ class CaloriesDataAdmin(ModelAdmin, ImportExportModelAdmin):
 @admin.register(ExerciseData)
 class ExerciseDataAdmin(ModelAdmin, ImportExportModelAdmin):
     list_filter_sheet = False
-    list_fullwidth = True
+    list_fullwidth = False
 
     list_display = (
         'user_id',
@@ -114,7 +114,7 @@ class ExerciseDataAdmin(ModelAdmin, ImportExportModelAdmin):
 @admin.register(TrainedModel)
 class TrainedModelAdmin(ModelAdmin):
     list_filter_sheet = False
-    list_fullwidth = True
+    list_fullwidth = False
 
     list_display = (
         'name',

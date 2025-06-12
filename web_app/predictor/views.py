@@ -95,7 +95,7 @@ class PredictCaloriesView(UnfoldModelAdminViewMixin, FormView):
         )
         messages.success(
             self.request,
-            f'Prediction: {prediction:.1f} kcal<br>'
+            f'Prediction: {prediction:.1f} kcal'
         )
 
         return self.render_to_response(

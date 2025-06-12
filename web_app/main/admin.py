@@ -8,6 +8,7 @@ from unfold.forms import UserCreationForm, UserChangeForm
 
 User = get_user_model()
 
+admin.site.index_title = 'Dashboard'
 admin.site.unregister(User)
 admin.site.unregister(Group)
 

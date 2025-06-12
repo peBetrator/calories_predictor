@@ -5,12 +5,18 @@ from unfold.layout import Submit
 from unfold.widgets import (
     UnfoldAdminIntegerFieldWidget,
     UnfoldAdminRadioSelectWidget,
+    UnfoldAdminSelectWidget,
 )
 
-from .enums import Gender
+from .enums import Gender, MlModel
 
 
 class CaloriesForm(forms.Form):
+    model = forms.ChoiceField(
+        choices=MlModel.choices,
+        widget=UnfoldAdminSelectWidget(),
+        required=True,
+    )
     gender = forms.ChoiceField(
         choices=Gender.choices,
         initial='male',
@@ -61,6 +67,15 @@ class CaloriesForm(forms.Form):
 
         self.helper = FormHelper()
         self.helper.layout = Layout(
+            Row(
+                Column(
+                    Fieldset('ML Model',
+                        'model',
+                    ),
+                    css_class='lg:w-1/2',
+                ),
+                css_class='mb-8',
+            ),
             Row(
                 Column(
                     Fieldset('Your Data',
