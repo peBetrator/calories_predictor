@@ -132,6 +132,9 @@ class ModelTrainer:
             'Calories': 'Calories',
         }
 
+        if self.X is None or self.y is None:
+            return {'headers': [], 'rows': []}
+
         df = self.X.copy()
         df['Calories'] = self.y
 
